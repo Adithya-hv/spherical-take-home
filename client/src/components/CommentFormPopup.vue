@@ -1,5 +1,5 @@
 <template>
-  <form id="comment-form">
+  <form id="comment-form" @submit.prevent="emitSubmit">
     <label for="description">Comment:</label>
     <textarea
       id="description"
@@ -7,16 +7,17 @@
       placeholder="Write your comment here!"
       required
     ></textarea>
-    <button type="submit" @click="emitSubmit">Add</button>
+    <button type="submit">Add</button>
   </form>
 </template>
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import type { CommentData } from '../stores/popupStore';
 
 import { getBrowserId } from '../utils/browserId';
 import { v4 as uuidv4 } from 'uuid';
+
+import type { CommentData } from '../stores/popupStore';
 
 interface Props {
   lat: number;
@@ -30,8 +31,7 @@ const emit = defineEmits<{
   (e: 'addComment', data: CommentData): void;
 }>();
 
-const emitSubmit = (event: Event) => {
-  event.preventDefault();
+const emitSubmit = () => {
   emit('addComment', {
     commentId: uuidv4(),
     browserId: getBrowserId(),

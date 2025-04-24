@@ -1,9 +1,13 @@
 <template>
-  <h3 class="comment-title">Comment:</h3>
-  <div class="comment-box">
-    <p>{{ comment.description }}</p>
+  <div class="info-popup">
+    <h3 class="comment-title">Comment:</h3>
+    <div class="comment-box">
+      <p>{{ comment.description }}</p>
+    </div>
+    <div class="delete-icon" @click="deleteComment">
+      <img :src="trashIcon" alt="Delete" />
+    </div>
   </div>
-  <button class="delete-button" @click="deleteComment">Delete Comment</button>
 </template>
 
 <script setup lang="ts">
@@ -13,6 +17,8 @@ import { usePopupStore } from '../stores/popupStore';
 import { useMarkerStore } from '../stores/markerStore';
 
 import type { CommentData } from '../stores/popupStore';
+
+import trashIcon from '../assets/icons/trashIcon.svg';
 
 const comment = defineProps<CommentData>();
 
@@ -27,6 +33,13 @@ const deleteComment = () => {
 </script>
 
 <style scoped>
+.info-popup {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
 .comment-box {
   max-width: 400px;
 
@@ -56,17 +69,33 @@ const deleteComment = () => {
   font-size: 16px;
   font-weight: bold;
   color: #222;
-  padding-right: 12px;
+  padding-right: 20px;
 }
 
 .comment-box p {
+  background: #f7f7f7;
+  padding: 10px;
+  border-radius: 4px;
   margin: 0;
 }
 
-.delete-button {
+.delete-icon {
+  margin-top: 6px;
+  padding: 5px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: inline-flex;
+  align-self: flex-end;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+}
+
+.delete-icon img {
   width: 20px;
   height: 20px;
-  border: none;
-  cursor: pointer;
+}
+
+.delete-icon:hover {
+  background-color: #d2cdcd;
 }
 </style>

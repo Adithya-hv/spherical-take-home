@@ -65,7 +65,7 @@ router.get('/by-browserId/:browserId', async (req, res) => {
       .select('commentId browserId description lat lng -_id');
 
     if (comments.length === 0) {
-      res.status(404).json({ error: 'No comments found for this browserId' });
+      res.json([]);
     }
 
     res.json(comments);

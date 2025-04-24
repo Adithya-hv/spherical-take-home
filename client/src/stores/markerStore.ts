@@ -7,7 +7,7 @@ import type { CommentData } from './popupStore';
 import dbService from '../services/dbService';
 
 export const useMarkerStore = defineStore('markerStore', () => {
-  const markerDataMap = new Map<String, mapboxgl.Marker>();
+  const markerDataMap = new Map<String, mapboxgl.Marker>(); // Maps commentId to marker
 
   const popupStore = usePopupStore();
   const markerStore = useMarkerStore();
@@ -32,12 +32,29 @@ export const useMarkerStore = defineStore('markerStore', () => {
     popupStore.closePopup();
   }
 
-  function addMarker(map: mapboxgl.Map, comment: CommentData, dbPush: boolean) {
-    const marker = new mapboxgl.Marker().setLngLat([comment.lng, comment.lat]).addTo(map!);
+  function createMarkerElement(voice: boolean): HTMLElement {
+    const el = document.createElement('div');
+    if (voice) {
+      el.className = 'voice-marker';
+    } else {
+      el.className = 'comment-marker';
+    }
+    return el;
+  }
+
+  function addMarker(map: mapboxgl.Map, comment: CommentData, dbPush: boolean, voice: boolean) {
+    const marker = new mapboxgl.Marker({ element: createMarkerElement(voice) })
+      .setLngLat([comment.lng, comment.lat])
+      .addTo(map!);
 
     marker.getElement().addEventListener('click', (e) => {
       e.stopPropagation();
-      popupStore.openInfoPopup(comment);
+
+      if (voice) {
+        popupStore.openVoicePopup(comment);
+      } else {
+        popupStore.openInfoPopup(comment);
+      }
     });
 
     markerStore.setMarker(comment, marker);

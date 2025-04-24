@@ -18,3 +18,21 @@ body {
   color: var(--text-color);
   background-color: var(--background-color);
 }
+
+.voice-marker {
+  background-image: url('./icons/voicedMarkerIcon.svg');
+  width: 48px;
+  height: 48px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
+
+.comment-marker {
+  background-image: url('./icons/commentMarkerIcon.svg');
+  width: 48px;
+  height: 48px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}

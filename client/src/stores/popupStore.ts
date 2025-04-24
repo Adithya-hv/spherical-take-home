@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 
-export type PopupType = 'form' | 'info';
+export type PopupType = 'form' | 'info' | 'voice';
 
 export type CommentData = {
   commentId: string;
@@ -31,6 +31,14 @@ export const usePopupStore = defineStore('popup', {
     openInfoPopup(commentData: CommentData) {
       this.visible = true;
       this.type = 'info';
+      this.lat = commentData.lat;
+      this.lng = commentData.lng;
+      this.data = commentData;
+    },
+
+    openVoicePopup(commentData: CommentData) {
+      this.visible = true;
+      this.type = 'voice';
       this.lat = commentData.lat;
       this.lng = commentData.lng;
       this.data = commentData;

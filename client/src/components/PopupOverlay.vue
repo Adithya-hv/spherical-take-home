@@ -2,7 +2,7 @@
   <Teleport to="body">
     <div
       v-if="visible"
-      class="popupFloating"
+      class="popup-floating"
       :style="{
         position: 'absolute',
         left: `${screenCoords.x}px`,
@@ -11,9 +11,12 @@
         zIndex: 1000,
       }"
     >
-      <button class="closeButton" @click="popupStore.closePopup()">X</button>
+      <div class="minimize-icon" @click="popupStore.closePopup()">
+        <img :src="minimizeIcon" alt="Minimize" />
+      </div>
       <CommentFormPopup v-if="type === 'form'" :lat="lat" :lng="lng" @addComment="onAddComment" />
       <CommentInfoPopup v-else-if="type === 'info'" v-bind="data!" />
+      <VoicedPopup v-else-if="type === 'voice'" v-bind="data!" />
     </div>
   </Teleport>
 </template>
@@ -22,6 +25,10 @@
 import { watchEffect, inject, reactive, onMounted, onUnmounted } from 'vue';
 import CommentFormPopup from './CommentFormPopup.vue';
 import CommentInfoPopup from './CommentInfoPopup.vue';
+
+import VoicedPopup from './VoicedPopup.vue';
+
+import minimizeIcon from '../assets/icons/minimizeIcon.svg';
 
 import { usePopupStore } from '../stores/popupStore';
 import type { CommentData } from '../stores/popupStore';
@@ -84,24 +91,37 @@ const onAddComment = (data: CommentData) => {
       lat: data.lat,
     },
     true,
+    false,
   );
 };
 </script>
 
 <style scoped>
-.popupFloating {
+.popup-floating {
   background: white;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
   padding: 1rem;
   pointer-events: auto;
 }
-.closeButton {
+
+.minimize-icon {
   position: absolute;
-  top: 10px;
-  right: 5px;
-  background: transparent;
-  border: none;
+  top: 6px;
+  right: 4px;
+  padding: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
   cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.minimize-icon img {
+  width: 20px;
+  height: 20px;
+}
+.minimize-icon:hover {
+  background-color: #d2cdcd;
 }
 </style>

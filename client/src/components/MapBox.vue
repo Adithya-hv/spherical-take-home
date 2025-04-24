@@ -19,6 +19,8 @@ import { useMarkerStore } from '../stores/markerStore';
 import { storeToRefs } from 'pinia';
 import dbService from '../services/dbService';
 
+import { voicedComments } from '../utils/voicedComments';
+
 const VITE_MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN;
 
 const popupStore = usePopupStore();
@@ -29,7 +31,7 @@ const { visible } = storeToRefs(popupStore);
 const props = withDefaults(defineProps<{ lat?: number; lng?: number; zoom?: number }>(), {
   lat: 12.9716, // default to home
   lng: 77.5946,
-  zoom: 12.5,
+  zoom: 12,
 });
 
 const mapContainer = ref<HTMLDivElement | null>(null);
@@ -52,12 +54,43 @@ const createPastComments = async () => {
             description: comment.description,
           },
           false,
+          false,
         );
       }
     });
   } catch (error) {
     console.error('Error fetching past comments:', error);
   }
+};
+
+const createVoicedComments = () => {
+  voicedComments.forEach((comment: CommentData) => {
+    markerStore.addMarker(
+      map!,
+      {
+        commentId: comment.commentId,
+        browserId: comment.browserId,
+        lng: comment.lng,
+        lat: comment.lat,
+        description: comment.description,
+      },
+      false,
+      true,
+    );
+  });
+};
+
+const spinAnimation = (map: mapboxgl.Map) => {
+  map.on('load', () => {
+    map.flyTo({
+      center: [props.lng, props.lat],
+      zoom: props.zoom,
+      bearing: 0,
+      speed: 2,
+      curve: 1.6,
+      easing: (t) => t,
+    });
+  });
 };
 
 onMounted(() => {
@@ -68,13 +101,21 @@ onMounted(() => {
   map = new mapboxgl.Map({
     container: mapContainer.value,
     style: 'mapbox://styles/awpti/cm80qoc78000w01s80ui2hl46',
-    center: [props.lng, props.lat],
-    zoom: props.zoom,
+    center: [74.998774, 32.856518],
+    zoom: 3,
   }).addControl(new mapboxgl.NavigationControl());
+
+  if (!map) {
+    console.error('Map initialization failed');
+    return;
+  }
 
   provide('map', map);
 
+  spinAnimation(map);
+
   createPastComments();
+  createVoicedComments();
 
   map.on('click', (e: MapMouseEvent) => {
     popupStore.openFormPopup(e.lngLat.lng, e.lngLat.lat);
