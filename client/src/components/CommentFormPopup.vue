@@ -16,6 +16,7 @@ import { ref } from 'vue';
 import type { CommentData } from '../stores/popupStore';
 
 import { getBrowserId } from '../utils/browserId';
+import { v4 as uuidv4 } from 'uuid';
 
 interface Props {
   lat: number;
@@ -32,6 +33,7 @@ const emit = defineEmits<{
 const emitSubmit = (event: Event) => {
   event.preventDefault();
   emit('addComment', {
+    commentId: uuidv4(),
     browserId: getBrowserId(),
     description: description.value,
     lng: props.lng,

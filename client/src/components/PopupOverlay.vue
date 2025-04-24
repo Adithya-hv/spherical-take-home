@@ -79,6 +79,7 @@ const onAddComment = (data: CommentData) => {
   popupStore.closePopup();
 
   markerStore.addMarker(map, {
+    commentId: data.commentId,
     browserId: data.browserId,
     description: data.description,
     lng: data.lng,
@@ -86,6 +87,7 @@ const onAddComment = (data: CommentData) => {
   });
 
   emit('addCommentData', {
+    commentId: data.commentId,
     browserId: data.browserId,
     description: data.description,
     lng: data.lng,

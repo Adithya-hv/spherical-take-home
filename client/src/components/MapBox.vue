@@ -12,6 +12,7 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 
 import type { CommentData } from '../stores/popupStore';
 import { getBrowserId } from '../utils/browserId'; // Testing purpose
+import { v4 as uuidv4 } from 'uuid'; // Testing purpose;
 
 import { usePopupStore } from '../stores/popupStore';
 import { useMarkerStore } from '../stores/markerStore';
@@ -45,12 +46,14 @@ const addCommentData = (data: CommentData) => {
 const createPastComments = () => {
   const pastComments: CommentData[] = [
     {
+      commentId: uuidv4(),
       browserId: getBrowserId(),
       description: 'This is a past comment.',
       lng: props.lng,
       lat: props.lat,
     },
     {
+      commentId: uuidv4(),
       browserId: getBrowserId(),
       description: 'Another past comment.',
       lng: props.lng,
@@ -61,6 +64,7 @@ const createPastComments = () => {
   pastComments.forEach((comment) => {
     if (comment.browserId == getBrowserId()) {
       markerStore.addMarker(map!, {
+        commentId: comment.commentId,
         browserId: comment.browserId,
         lng: comment.lng,
         lat: comment.lat,

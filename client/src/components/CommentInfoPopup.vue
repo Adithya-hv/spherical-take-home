@@ -3,11 +3,7 @@
   <div class="comment-box">
     <p>{{ comment.description }}</p>
   </div>
-  <button
-    class="btn btn-primary"
-    @click="deleteComment"
-    style="margin-top: 10px; width: 100%"
-  ></button>
+  <button class="delete-button" @click="deleteComment">Delete Comment</button>
 </template>
 
 <script setup lang="ts">
@@ -65,5 +61,12 @@ const deleteComment = () => {
 
 .comment-box p {
   margin: 0;
+}
+
+.delete-button {
+  width: 20px;
+  height: 20px;
+  border: none;
+  cursor: pointer;
 }
 </style>

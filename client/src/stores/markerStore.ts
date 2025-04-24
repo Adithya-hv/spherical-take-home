@@ -10,24 +10,20 @@ export const useMarkerStore = defineStore('markerStore', () => {
   const popupStore = usePopupStore();
   const markerStore = useMarkerStore();
 
-  const uniqueId = (data: CommentData): String => {
-    return data.browserId + data.lat + data.lng;
-  };
-
   function setMarker(data: CommentData, marker: mapboxgl.Marker) {
-    markerDataMap.set(uniqueId(data), marker);
+    markerDataMap.set(data.commentId, marker);
   }
 
   function getMarker(data: CommentData) {
-    return markerDataMap.get(uniqueId(data));
+    return markerDataMap.get(data.commentId);
   }
 
   function deleteMarker(data: CommentData) {
-    console.log('recived', uniqueId(data));
+    console.log('recived', data.commentId);
 
-    const marker = markerDataMap.get(uniqueId(data));
+    const marker = markerDataMap.get(data.commentId);
     marker!.remove();
-    markerDataMap.delete(uniqueId(data));
+    markerDataMap.delete(data.commentId);
     // Remove from db too
     popupStore.closePopup();
   }

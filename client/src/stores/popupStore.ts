@@ -3,6 +3,7 @@ import { defineStore } from 'pinia';
 export type PopupType = 'form' | 'info';
 
 export type CommentData = {
+  commentId: string;
   browserId: string;
   description: string;
   lng: number;
