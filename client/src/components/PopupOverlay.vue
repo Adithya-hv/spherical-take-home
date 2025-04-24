@@ -36,10 +36,6 @@ const { visible, type, lat, lng, data } = storeToRefs(popupStore);
 
 const markerStore = useMarkerStore();
 
-const emit = defineEmits<{
-  (e: 'addCommentData', data: CommentData): void;
-}>();
-
 const screenCoords = reactive<{ x: number; y: number }>({
   x: 0,
   y: 0,
@@ -78,21 +74,17 @@ function updateCoords() {
 const onAddComment = (data: CommentData) => {
   popupStore.closePopup();
 
-  markerStore.addMarker(map, {
-    commentId: data.commentId,
-    browserId: data.browserId,
-    description: data.description,
-    lng: data.lng,
-    lat: data.lat,
-  });
-
-  emit('addCommentData', {
-    commentId: data.commentId,
-    browserId: data.browserId,
-    description: data.description,
-    lng: data.lng,
-    lat: data.lat,
-  });
+  markerStore.addMarker(
+    map,
+    {
+      commentId: data.commentId,
+      browserId: data.browserId,
+      description: data.description,
+      lng: data.lng,
+      lat: data.lat,
+    },
+    true,
+  );
 };
 </script>
 

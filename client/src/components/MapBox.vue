@@ -1,23 +1,23 @@
 <template>
   <div ref="mapContainer" class="map-container"></div>
-  <PopupOverlay v-if="visible" @addCommentData="addCommentData" />
+  <PopupOverlay v-if="visible" />
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, provide, reactive } from 'vue';
+import { ref, onMounted, onUnmounted, provide } from 'vue';
 import PopupOverlay from './PopupOverlay.vue';
 
 import mapboxgl, { MapMouseEvent } from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
 import type { CommentData } from '../stores/popupStore';
-import { getBrowserId } from '../utils/browserId'; // Testing purpose
-import { v4 as uuidv4 } from 'uuid'; // Testing purpose;
+import { getBrowserId } from '../utils/browserId';
 
 import { usePopupStore } from '../stores/popupStore';
 import { useMarkerStore } from '../stores/markerStore';
 
 import { storeToRefs } from 'pinia';
+import dbService from '../services/dbService';
 
 const VITE_MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN;
 
@@ -32,46 +32,32 @@ const props = withDefaults(defineProps<{ lat?: number; lng?: number; zoom?: numb
   zoom: 12.5,
 });
 
-const comments = reactive<CommentData[]>([]);
-
 const mapContainer = ref<HTMLDivElement | null>(null);
 let map: mapboxgl.Map | null = null;
 
-const addCommentData = (data: CommentData) => {
-  // Add db push here
-  comments.push(data);
-  console.log('Comment data added:', comments);
-};
+const createPastComments = async () => {
+  try {
+    const pastComments = await dbService.getCommentsByBrowserId(getBrowserId());
+    console.log('Past comments:', pastComments);
 
-const createPastComments = () => {
-  const pastComments: CommentData[] = [
-    {
-      commentId: uuidv4(),
-      browserId: getBrowserId(),
-      description: 'This is a past comment.',
-      lng: props.lng,
-      lat: props.lat,
-    },
-    {
-      commentId: uuidv4(),
-      browserId: getBrowserId(),
-      description: 'Another past comment.',
-      lng: props.lng,
-      lat: props.lat,
-    },
-  ];
-
-  pastComments.forEach((comment) => {
-    if (comment.browserId == getBrowserId()) {
-      markerStore.addMarker(map!, {
-        commentId: comment.commentId,
-        browserId: comment.browserId,
-        lng: comment.lng,
-        lat: comment.lat,
-        description: comment.description,
-      });
-    }
-  });
+    pastComments.forEach((comment: CommentData) => {
+      if (comment.browserId == getBrowserId()) {
+        markerStore.addMarker(
+          map!,
+          {
+            commentId: comment.commentId,
+            browserId: comment.browserId,
+            lng: comment.lng,
+            lat: comment.lat,
+            description: comment.description,
+          },
+          false,
+        );
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching past comments:', error);
+  }
 };
 
 onMounted(() => {

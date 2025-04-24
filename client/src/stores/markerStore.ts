@@ -4,6 +4,8 @@ import mapboxgl from 'mapbox-gl';
 import { usePopupStore } from './popupStore';
 import type { CommentData } from './popupStore';
 
+import dbService from '../services/dbService';
+
 export const useMarkerStore = defineStore('markerStore', () => {
   const markerDataMap = new Map<String, mapboxgl.Marker>();
 
@@ -24,11 +26,13 @@ export const useMarkerStore = defineStore('markerStore', () => {
     const marker = markerDataMap.get(data.commentId);
     marker!.remove();
     markerDataMap.delete(data.commentId);
-    // Remove from db too
+
+    dbService.deleteComment(data.commentId);
+
     popupStore.closePopup();
   }
 
-  function addMarker(map: mapboxgl.Map, comment: CommentData) {
+  function addMarker(map: mapboxgl.Map, comment: CommentData, dbPush: boolean) {
     const marker = new mapboxgl.Marker().setLngLat([comment.lng, comment.lat]).addTo(map!);
 
     marker.getElement().addEventListener('click', (e) => {
@@ -37,6 +41,7 @@ export const useMarkerStore = defineStore('markerStore', () => {
     });
 
     markerStore.setMarker(comment, marker);
+    if (dbPush) dbService.addComment(comment);
   }
 
   return {
