@@ -19,7 +19,9 @@ import { useMarkerStore } from '../stores/markerStore';
 import { storeToRefs } from 'pinia';
 import dbService from '../services/dbService';
 
-import { voicedComments } from '../utils/voicedComments';
+import { voicedComments } from '../data/voicedComments';
+import { playSound } from '@/utils/playAudio';
+import clickSound from '../assets/sounds/mouseClick.mp3';
 
 const VITE_MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN;
 
@@ -44,18 +46,7 @@ const createPastComments = async () => {
 
     pastComments.forEach((comment: CommentData) => {
       if (comment.browserId == getBrowserId()) {
-        markerStore.addMarker(
-          map!,
-          {
-            commentId: comment.commentId,
-            browserId: comment.browserId,
-            lng: comment.lng,
-            lat: comment.lat,
-            description: comment.description,
-          },
-          false,
-          false,
-        );
+        markerStore.addMarker(map!, comment, false, false);
       }
     });
   } catch (error) {
@@ -65,18 +56,7 @@ const createPastComments = async () => {
 
 const createVoicedComments = () => {
   voicedComments.forEach((comment: CommentData) => {
-    markerStore.addMarker(
-      map!,
-      {
-        commentId: comment.commentId,
-        browserId: comment.browserId,
-        lng: comment.lng,
-        lat: comment.lat,
-        description: comment.description,
-      },
-      false,
-      true,
-    );
+    markerStore.addMarker(map!, comment, false, true);
   });
 };
 
@@ -118,6 +98,7 @@ onMounted(() => {
   createVoicedComments();
 
   map.on('click', (e: MapMouseEvent) => {
+    playSound(clickSound);
     popupStore.openFormPopup(e.lngLat.lng, e.lngLat.lat);
   });
 });

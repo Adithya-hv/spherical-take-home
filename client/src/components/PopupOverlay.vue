@@ -11,7 +11,7 @@
         zIndex: 1000,
       }"
     >
-      <div class="minimize-icon" @click="popupStore.closePopup()">
+      <div class="minimize-icon" @click="minimize">
         <img :src="minimizeIcon" alt="Minimize" />
       </div>
       <CommentFormPopup v-if="type === 'form'" :lat="lat" :lng="lng" @addComment="onAddComment" />
@@ -25,19 +25,19 @@
 import { watchEffect, inject, reactive, onMounted, onUnmounted } from 'vue';
 import CommentFormPopup from './CommentFormPopup.vue';
 import CommentInfoPopup from './CommentInfoPopup.vue';
-
 import VoicedPopup from './VoicedPopup.vue';
-
-import minimizeIcon from '../assets/icons/minimizeIcon.svg';
 
 import { usePopupStore } from '../stores/popupStore';
 import type { CommentData } from '../stores/popupStore';
 import { useMarkerStore } from '../stores/markerStore';
 import { storeToRefs } from 'pinia';
 
-const map = inject<mapboxgl.Map>('map');
-if (!map) throw new Error('Map not provided');
+import minimizeIcon from '../assets/icons/minimizeIcon.svg';
 
+const map = inject<mapboxgl.Map>('map');
+if (!map) {
+  console.warn('Map not provided yet');
+}
 const popupStore = usePopupStore();
 const { visible, type, lat, lng, data } = storeToRefs(popupStore);
 
@@ -47,6 +47,35 @@ const screenCoords = reactive<{ x: number; y: number }>({
   x: 0,
   y: 0,
 });
+
+const updateCoords = () => {
+  if (!map || !visible.value) return;
+
+  const point = map.project([lng.value, lat.value]);
+  screenCoords.x = point.x;
+  screenCoords.y = point.y;
+};
+
+const onAddComment = (data: CommentData) => {
+  popupStore.closePopup();
+
+  markerStore.addMarker(
+    map!,
+    {
+      commentId: data.commentId,
+      browserId: data.browserId,
+      description: data.description,
+      lng: data.lng,
+      lat: data.lat,
+    },
+    true,
+    false,
+  );
+};
+
+const minimize = () => {
+  popupStore.closePopup();
+};
 
 watchEffect(() => {
   if (!map || !visible) return;
@@ -69,31 +98,6 @@ onUnmounted(() => {
   map.off('move', updateCoords);
   map.off('zoom', updateCoords);
 });
-
-function updateCoords() {
-  if (!map || !visible.value) return;
-
-  const point = map.project([lng.value, lat.value]);
-  screenCoords.x = point.x;
-  screenCoords.y = point.y;
-}
-
-const onAddComment = (data: CommentData) => {
-  popupStore.closePopup();
-
-  markerStore.addMarker(
-    map,
-    {
-      commentId: data.commentId,
-      browserId: data.browserId,
-      description: data.description,
-      lng: data.lng,
-      lat: data.lat,
-    },
-    true,
-    false,
-  );
-};
 </script>
 
 <style scoped>
@@ -101,7 +105,7 @@ const onAddComment = (data: CommentData) => {
   background: white;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-  padding: 1rem;
+  padding: 15px;
   pointer-events: auto;
 }
 

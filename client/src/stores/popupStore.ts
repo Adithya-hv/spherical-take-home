@@ -1,4 +1,6 @@
 import { defineStore } from 'pinia';
+import { playSound } from '../utils/playAudio';
+import clickSound from '../assets/sounds/mouseClick.mp3';
 
 export type PopupType = 'form' | 'info' | 'voice';
 
@@ -45,6 +47,7 @@ export const usePopupStore = defineStore('popup', {
     },
 
     closePopup() {
+      playSound(clickSound);
       this.visible = false;
       this.type = null;
       this.data = null;

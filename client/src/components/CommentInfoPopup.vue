@@ -15,7 +15,6 @@ import { toRaw } from 'vue';
 
 import { usePopupStore } from '../stores/popupStore';
 import { useMarkerStore } from '../stores/markerStore';
-
 import type { CommentData } from '../stores/popupStore';
 
 import trashIcon from '../assets/icons/trashIcon.svg';

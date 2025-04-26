@@ -3,7 +3,11 @@
     <h3 class="popup-title">{{ comment.commentId }}</h3>
 
     <div class="audio-section">
-      <img :src="playSoundIcon" alt="Play Sound" @click="playVoice" />
+      <img
+        :src="isPlaying ? pauseSoundIcon : playSoundIcon"
+        alt="Play Sound"
+        @click="playCommentVoice"
+      />
     </div>
 
     <div class="translation-box">
@@ -14,23 +18,38 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue';
 import type { CommentData } from '../stores/popupStore';
+import { playSound, playVoice, isVoicePlaying } from '@/utils/playAudio';
 
 import playSoundIcon from '../assets/icons/playSoundIcon.svg';
+import pauseSoundIcon from '../assets/icons/pauseSoundIcon.svg';
 
-import test from '../assets/voices/test.mp3';
+import clickSound from '../assets/sounds/mouseClick.mp3';
+import vibhavHiranandani from '../assets/voices/vibhavHiranadani.mp3';
+import arjunPurva from '../assets/voices/arjunPurva.mp3';
 
 const comment = defineProps<CommentData>();
 
-const playVoice = () => {
+const isPlaying = ref(false);
+
+const playCommentVoice = () => {
+  playSound(clickSound);
   switch (comment.commentId) {
     case 'Vibhav':
-      const audio1 = new Audio(test);
-      audio1.play();
+      playVoice(vibhavHiranandani, () => {
+        isPlaying.value = false;
+      });
+      break;
+    case 'Arjun':
+      playVoice(arjunPurva, () => {
+        isPlaying.value = false;
+      });
       break;
     default:
       console.error('No audio available for this comment.');
   }
+  isPlaying.value = isVoicePlaying();
 };
 </script>
 

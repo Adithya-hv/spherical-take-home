@@ -5,12 +5,13 @@ import { usePopupStore } from './popupStore';
 import type { CommentData } from './popupStore';
 
 import dbService from '../services/dbService';
+import { playSound } from '@/utils/playAudio';
+import clickSound from '../assets/sounds/mouseClick.mp3';
 
 export const useMarkerStore = defineStore('markerStore', () => {
   const markerDataMap = new Map<String, mapboxgl.Marker>(); // Maps commentId to marker
 
   const popupStore = usePopupStore();
-  const markerStore = useMarkerStore();
 
   function setMarker(data: CommentData, marker: mapboxgl.Marker) {
     markerDataMap.set(data.commentId, marker);
@@ -49,6 +50,7 @@ export const useMarkerStore = defineStore('markerStore', () => {
 
     marker.getElement().addEventListener('click', (e) => {
       e.stopPropagation();
+      playSound(clickSound);
 
       if (voice) {
         popupStore.openVoicePopup(comment);
@@ -57,8 +59,12 @@ export const useMarkerStore = defineStore('markerStore', () => {
       }
     });
 
-    markerStore.setMarker(comment, marker);
+    setMarker(comment, marker);
     if (dbPush) dbService.addComment(comment);
+  }
+
+  function reset() {
+    markerDataMap.clear(); // Clears the map
   }
 
   return {
@@ -67,5 +73,6 @@ export const useMarkerStore = defineStore('markerStore', () => {
     deleteMarker,
     addMarker,
     markerDataMap,
+    reset,
   };
 });
