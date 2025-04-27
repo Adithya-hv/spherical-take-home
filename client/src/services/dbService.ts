@@ -16,7 +16,7 @@ const getCommentsByBrowserId = async (browserId: string) => {
     // https://www.youtube.com/watch?v=P0a7PwRNLVU
     // GET /comments?browserId=browserId
     // add type commentData[]
-    const response = await api.get<CommentData[]>(`/by-browserId/${browserId}`);
+    const response = await api.get<CommentData[]>(`/comments/by-browserId/${browserId}`);
     return response.data;
   } catch (error: any) {
     if (axios.isAxiosError(error) && error.response?.status === 404) {
@@ -31,7 +31,7 @@ const getCommentsByBrowserId = async (browserId: string) => {
 const addComment = async (commentData: CommentData) => {
   try {
     // POST /comments
-    const response = await api.post('/', commentData);
+    const response = await api.post('/comments/', commentData);
     return response.data; // Return the response message and comment
   } catch (error) {
     console.error('Error adding comment:', error);
@@ -42,7 +42,7 @@ const addComment = async (commentData: CommentData) => {
 const deleteComment = async (commentId: string) => {
   try {
     // /comments/:comment_id
-    const response = await api.delete(`/${commentId}`);
+    const response = await api.delete(`/comments/${commentId}`);
     return response.data; // Return the response message
   } catch (error) {
     console.error('Error deleting comment:', error);

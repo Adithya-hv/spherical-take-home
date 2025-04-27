@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 test('marker interaction flow', async ({ page }) => {
-  // audio spy
+  // Audio spy
   await page.addInitScript(() => {
     window.__audioPlayed = false;
     const originalPlay = HTMLAudioElement.prototype.play;
@@ -12,10 +12,11 @@ test('marker interaction flow', async ({ page }) => {
   });
 
   await page.goto('http://localhost:5173/');
-  await page.waitForTimeout(3000); // wait for animation to finish
+  await page.waitForTimeout(3000); // Wait for animation to finish
 
-  // minimize comment box
-  await page.getByRole('region', { name: 'Map' }).click({ position: { x: 501, y: 453 } }); //make comment
+  // Minimize comment box
+  // TODO: Clicks on the map should not be hardcoded
+  await page.getByRole('region', { name: 'Map' }).click({ position: { x: 501, y: 453 } });
   const commentBox = page.getByText('Comment:');
   if (await commentBox.isVisible()) {
     await commentBox.click();
@@ -23,26 +24,26 @@ test('marker interaction flow', async ({ page }) => {
     await expect(commentBox).not.toBeVisible();
   }
 
-  // form interaction
+  // Form interaction
   await page.getByRole('region', { name: 'Map' }).click({ position: { x: 510, y: 448 } });
   await page.getByRole('textbox', { name: 'Comment:' }).fill('This is a test.');
   await page.getByRole('button', { name: 'Add' }).click();
 
-  // check if marker exists
+  // Check if marker exists
   await page.getByRole('img', { name: 'Map marker' }).nth(1).click();
   await expect(page.getByText('This is a test.')).toBeVisible();
 
-  // check if marker is minimized
+  // Check if marker is minimized
   await page.getByRole('img', { name: 'Minimize' }).click();
   await expect(page.getByText('This is a test.')).not.toBeVisible();
 
-  // check if marker is deleted
+  // Check if marker is deleted
   const markersBefore = await page.getByRole('img', { name: 'Map marker' }).count();
   await page.getByRole('img', { name: 'Map marker' }).nth(1).click();
   await page.getByRole('img', { name: 'Delete' }).click();
   await expect(page.getByRole('img', { name: 'Map marker' })).toHaveCount(markersBefore - 1);
 
-  // check if voice marker exists
+  // Check if voice marker exists
   await page.getByRole('img', { name: 'Map marker' }).click();
   await expect(page.getByText('Translation:')).toBeVisible();
   await page.getByRole('img', { name: 'Minimize' }).click();

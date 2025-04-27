@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import type { RouteRecordRaw } from 'vue-router';
 import HomeView from '../views/HomeView.vue';
 
+// Dont have any other routes but will be useful for future development
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',

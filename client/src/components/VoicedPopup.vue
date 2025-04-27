@@ -1,15 +1,10 @@
 <template>
   <div class="voiced-popup">
     <h3 class="popup-title">{{ comment.commentId }}</h3>
-
-    <div class="audio-section">
-      <img
-        :src="isPlaying ? pauseSoundIcon : playSoundIcon"
-        alt="Play Sound"
-        @click="playCommentVoice"
-      />
+    <div class="audio-section" @click="playCommentVoice">
+      <PhSpeakerHigh v-if="!audioStore.isPlaying" :size="32" color="#4caf50" weight="fill" />
+      <PhSpeakerX v-else :size="32" color="#f44336" weight="fill" />
     </div>
-
     <div class="translation-box">
       <label for="translation">Translation:</label>
       <p id="translation">{{ comment.description }}</p>
@@ -18,31 +13,22 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
 import type { CommentData } from '../stores/popupStore';
-import { playSound, playVoice, isVoicePlaying } from '@/utils/playAudio';
-
-import playSoundIcon from '../assets/icons/playSoundIcon.svg';
-import pauseSoundIcon from '../assets/icons/pauseSoundIcon.svg';
-
+import { useAudioStore } from '../stores/audioStore';
+import { playSound } from '../utils/audioUtils';
+import { PhSpeakerHigh, PhSpeakerX } from 'phosphor-vue';
 import clickSound from '../assets/sounds/mouseClick.mp3';
 
 const comment = defineProps<CommentData>();
 
-const isPlaying = ref(false);
+const audioStore = useAudioStore();
 
 const playCommentVoice = () => {
   if (typeof comment.voice === 'undefined') {
     throw 'expected audio comment';
   }
-
   playSound(clickSound);
-
-  playVoice(comment.voice, () => {
-    isPlaying.value = false;
-  });
-
-  isPlaying.value = isVoicePlaying();
+  audioStore.playVoice(comment.voice);
 };
 </script>
 
@@ -52,13 +38,12 @@ const playCommentVoice = () => {
   flex-direction: column;
   max-width: 400px;
 }
-
 .popup-title {
-  font-size: 18px;
+  font-family: 'Comfortaa', Arial, sans-serif;
+  font-size: 20px;
   font-weight: bold;
   color: #222;
 }
-
 .audio-section {
   display: flex;
   align-items: center;
@@ -78,7 +63,6 @@ const playCommentVoice = () => {
 .audio-section:hover {
   background-color: #d2cdcd;
 }
-
 .translation-box {
   font-family: 'Comfortaa', Arial, sans-serif;
   font-size: 14px;
@@ -86,12 +70,10 @@ const playCommentVoice = () => {
   color: #333;
   word-wrap: break-word;
 }
-
 .translation-box label {
   font-weight: bold;
   margin-bottom: 5px;
 }
-
 .translation-box p {
   font-weight: 550;
   background: #fbf8e9;

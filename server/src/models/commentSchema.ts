@@ -6,11 +6,11 @@ const CommentSchema = new mongoose.Schema(
     browserId: { type: String, required: true },
     description: { type: String, required: true },
     lat: { type: Number, required: true },
-    lng: { type: Number, required: true },
+    lng: { type: Number, required: true }
   },
   {
-    timestamps: true,
-  },
+    timestamps: true
+  }
 );
 
 export const Comment = mongoose.model('Comment', CommentSchema);

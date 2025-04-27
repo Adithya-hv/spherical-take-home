@@ -1,23 +1,25 @@
 <template>
+  <!-- So we render this component here and move(teleport) it to the body in the DOM
+  to make sure it is always on top of the map and not hidden by other elements -->
   <Teleport to="body">
     <div
       v-if="visible"
       class="popup-floating"
       :style="{
         position: 'absolute',
+        transform: 'translate(0%, -100%)',
         left: `${screenCoords.x}px`,
         top: `${screenCoords.y}px`,
-        transform: 'translate(0%, -100%)',
         borderColor: popupBorderColor,
         '--popup-border-color': popupBorderColor,
       }"
     >
-      <div class="minimize-icon" @click="minimize">
+      <div class="close-icon" @click="close">
         <PhXCircle :size="20" color="#35332f" weight="bold" />
       </div>
       <CommentFormPopup v-if="type === 'form'" :lat="lat" :lng="lng" @addComment="onAddComment" />
-      <CommentInfoPopup v-else-if="type === 'info'" v-bind="data!" />
-      <VoicedPopup v-else-if="type === 'voice'" v-bind="data!" />
+      <CommentInfoPopup v-else-if="type === 'info' && data" v-bind="data" />
+      <VoicedPopup v-else-if="type === 'voice' && data" v-bind="data" />
     </div>
   </Teleport>
 </template>
@@ -31,23 +33,27 @@ import { usePopupStore } from '../stores/popupStore';
 import type { CommentData } from '../stores/popupStore';
 import { useMarkerStore } from '../stores/markerStore';
 import { storeToRefs } from 'pinia';
-import minimizeIcon from '../assets/icons/minimizeIcon.svg';
 import { PhXCircle } from 'phosphor-vue';
 
+// Gets the map instance from the provide in MapBox.vue
 const map = inject<mapboxgl.Map>('map');
 if (!map) {
   console.warn('Map not provided yet');
 }
-
 const popupStore = usePopupStore();
 const markerStore = useMarkerStore();
-
 const { visible, type, lat, lng, data } = storeToRefs(popupStore);
-
 const screenCoords = reactive<{ x: number; y: number }>({
   x: 0,
   y: 0,
 });
+const borderColorMap = {
+  form: '#ff9800',
+  info: '#4caf50',
+  voice: '#f44336',
+};
+// Changes the popup border color based on the type of popup
+const popupBorderColor = computed(() => borderColorMap[type.value ?? 'info'] || '#4caf50');
 
 const updateCoords = () => {
   if (!map || !visible.value) return;
@@ -56,15 +62,21 @@ const updateCoords = () => {
   screenCoords.y = point.y;
 };
 
+// Adds a marker when is hears the addComment event
 const onAddComment = (data: CommentData) => {
   popupStore.closePopup();
-  markerStore.addMarker(map!, data, true, false);
+  if (map) {
+    markerStore.addMarker(map, data, true, false);
+  } else {
+    console.warn('Map is undefined, cannot add marker.');
+  }
 };
 
-const minimize = () => {
+const close = () => {
   popupStore.closePopup();
 };
 
+// Watching for edge cases like first render
 watchEffect(() => {
   if (!map || !visible) return;
   const point = map.project([lng.value, lat.value]);
@@ -72,19 +84,14 @@ watchEffect(() => {
   screenCoords.y = point.y;
 });
 
-const borderColorMap = {
-  form: '#ff9800',
-  info: '#4caf50',
-  voice: '#f44336',
-};
-const popupBorderColor = computed(() => borderColorMap[type.value] || '#4caf50');
-
+// Updates the screen coordinates when the map is moved or zoomed
 onMounted(() => {
   if (!map) return;
   map.on('move', updateCoords);
   map.on('zoom', updateCoords);
 });
 
+// Cleans up the event listeners
 onUnmounted(() => {
   if (!map) return;
   map.off('move', updateCoords);
@@ -110,21 +117,21 @@ onUnmounted(() => {
     border-color 1s ease,
     --popup-border-color 1s ease;
 }
-
 .popup-floating::after {
   content: '';
   position: absolute;
   bottom: -10px;
   left: -10px;
   transform: rotate(45deg);
-
   width: 0;
   height: 0;
   border: 10px solid transparent;
-  border-top-color: var(--popup-border-color); /* same as the box border color */
+  border-top-color: var(--popup-border-color);
+  transition:
+    border-top-color 1s ease,
+    --popup-border-color 1s ease;
 }
-
-.minimize-icon {
+.close-icon {
   position: absolute;
   top: 6px;
   right: 4px;
@@ -135,8 +142,7 @@ onUnmounted(() => {
   cursor: pointer;
   transition: background-color 0.2s ease;
 }
-
-.minimize-icon:hover {
+.close-icon:hover {
   background-color: #d2cdcd;
 }
 </style>

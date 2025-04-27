@@ -1,21 +1,21 @@
 import { defineStore } from 'pinia';
-import { playSound } from '../utils/playAudio';
+import { playSound } from '../utils/audioUtils';
 import clickSound from '../assets/sounds/mouseClick.mp3';
 
-// TODO: consider enum
 export type PopupType = 'form' | 'info' | 'voice';
 
-// TODO: consider using interfaces, name this ICommentData
 export type CommentData = {
   commentId: string;
   browserId: string;
   description: string;
+  // TODO: Add support for voice comments with an object Database.
   isVoice?: boolean;
   voice?: string;
   lng: number;
   lat: number;
 };
 
+// This store manages the popup state, including its visibility, type, and data for PopupOverlay.vue.
 export const usePopupStore = defineStore('popup', {
   state: () => ({
     visible: false,

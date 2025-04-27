@@ -2,6 +2,7 @@ import type { CommentData } from '../stores/popupStore';
 import vibhavHiranandani from '../assets/voices/vibhavHiranadani.mp3';
 import arjunPurva from '../assets/voices/arjunPurva.mp3';
 
+// This file contains the hardcoded voiced comments for the map
 export const voicedComments: CommentData[] = [
   {
     commentId: 'Vibhav',

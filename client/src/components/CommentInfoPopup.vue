@@ -12,12 +12,9 @@
 
 <script setup lang="ts">
 import { toRaw } from 'vue';
-
 import { usePopupStore } from '../stores/popupStore';
 import { useMarkerStore } from '../stores/markerStore';
 import type { CommentData } from '../stores/popupStore';
-
-import trashIcon from '../assets/icons/trashIcon.svg';
 import { PhTrash } from 'phosphor-vue';
 
 const comment = defineProps<CommentData>();
@@ -39,17 +36,13 @@ const deleteComment = () => {
   justify-content: flex-start;
   align-items: flex-start;
 }
-
 .comment-box {
   max-width: 400px;
-
   word-wrap: break-word;
   overflow-wrap: break-word;
   white-space: pre-wrap;
-
   max-height: 300px;
   overflow-y: auto;
-
   font-family:
     'Comfortaa' Arial,
     sans-serif;
@@ -61,12 +54,10 @@ const deleteComment = () => {
 .comment-box::-webkit-scrollbar {
   width: 6px;
 }
-
 .comment-box::-webkit-scrollbar-thumb {
   background-color: rgba(0, 0, 0, 0.2);
   border-radius: 3px;
 }
-
 .comment-title {
   margin: 0 0 8px 0;
   font-family: 'Comfortaa', Arial, sans-serif;
@@ -75,14 +66,12 @@ const deleteComment = () => {
   color: #222;
   padding-right: 20px;
 }
-
 .comment-box p {
   background: #fbf8e9;
   padding: 10px;
   border-radius: 4px;
   margin: 0;
 }
-
 .delete-icon {
   margin-top: 6px;
   padding: 5px;
@@ -93,12 +82,10 @@ const deleteComment = () => {
   justify-content: center;
   transition: background-color 0.2s ease;
 }
-
 .delete-icon img {
   width: 20px;
   height: 20px;
 }
-
 .delete-icon:hover {
   background-color: #cfd2cd;
 }

@@ -6,6 +6,7 @@
 
 <script setup lang="ts">
 import MapBox from '../components/MapBox.vue';
+// This is the main view of the application
 </script>
 
 <style scoped>

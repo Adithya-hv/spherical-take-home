@@ -33,7 +33,7 @@ router.post('/', async (req: Request, res: Response) => {
       browserId,
       description,
       lng,
-      lat,
+      lat
     });
 
     await comment.save();
@@ -87,7 +87,7 @@ router.get(
       res.status(500).json({ error: 'Server error' });
       return;
     }
-  },
+  }
 );
 
 export default router;

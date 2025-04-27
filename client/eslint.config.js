@@ -16,7 +16,7 @@ export default defineConfig([
       globals: globals.browser,
     },
     rules: {
-      // warn on Prettier issues in Problems tab
+      // Warn on Prettier issues in Problems tab
       'prettier/prettier': 'warn',
       trailingComma: 'none',
     },
