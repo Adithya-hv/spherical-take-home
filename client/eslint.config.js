@@ -18,6 +18,7 @@ export default defineConfig([
     rules: {
       // warn on Prettier issues in Problems tab
       'prettier/prettier': 'warn',
+      trailingComma: 'none',
     },
     extends: ['js/recommended'],
   },

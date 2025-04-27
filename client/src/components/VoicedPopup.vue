@@ -26,29 +26,22 @@ import playSoundIcon from '../assets/icons/playSoundIcon.svg';
 import pauseSoundIcon from '../assets/icons/pauseSoundIcon.svg';
 
 import clickSound from '../assets/sounds/mouseClick.mp3';
-import vibhavHiranandani from '../assets/voices/vibhavHiranadani.mp3';
-import arjunPurva from '../assets/voices/arjunPurva.mp3';
 
 const comment = defineProps<CommentData>();
 
 const isPlaying = ref(false);
 
 const playCommentVoice = () => {
-  playSound(clickSound);
-  switch (comment.commentId) {
-    case 'Vibhav':
-      playVoice(vibhavHiranandani, () => {
-        isPlaying.value = false;
-      });
-      break;
-    case 'Arjun':
-      playVoice(arjunPurva, () => {
-        isPlaying.value = false;
-      });
-      break;
-    default:
-      console.error('No audio available for this comment.');
+  if (typeof comment.voice === 'undefined') {
+    throw 'expected audio comment';
   }
+
+  playSound(clickSound);
+
+  playVoice(comment.voice, () => {
+    isPlaying.value = false;
+  });
+
   isPlaying.value = isVoicePlaying();
 };
 </script>
@@ -87,7 +80,7 @@ const playCommentVoice = () => {
 }
 
 .translation-box {
-  font-family: Arial, sans-serif;
+  font-family: 'Comfortaa', Arial, sans-serif;
   font-size: 14px;
   line-height: 1.5;
   color: #333;
@@ -95,12 +88,13 @@ const playCommentVoice = () => {
 }
 
 .translation-box label {
-  font-weight: 700;
+  font-weight: bold;
   margin-bottom: 5px;
 }
 
 .translation-box p {
-  background: #f7f7f7;
+  font-weight: 550;
+  background: #fbf8e9;
   padding: 10px;
   border-radius: 4px;
   margin: 0;

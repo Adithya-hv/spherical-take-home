@@ -6,25 +6,27 @@ body,
   height: 100%;
   width: 100%;
   overflow: hidden;
+  font-family: 'Comfortaa', sans-serif;
 }
 
 html {
   font-size: 18px;
 }
+
 body {
-  font-family: 'Inter', sans-serif;
-  font-size: 1rem;
+  font-weight: 400;
+  font-size: 14px;
   line-height: 1.5;
-  color: var(--text-color);
-  background-color: var(--background-color);
 }
 
 .voice-marker {
   background-image: url('./icons/voicedMarkerIcon.svg');
   width: 48px;
   height: 48px;
-  background-size: contain;
-  background-repeat: no-repeat;
+  cursor: pointer;
+}
+
+button {
   cursor: pointer;
 }
 
@@ -32,7 +34,5 @@ body {
   background-image: url('./icons/commentMarkerIcon.svg');
   width: 48px;
   height: 48px;
-  background-size: contain;
-  background-repeat: no-repeat;
   cursor: pointer;
 }

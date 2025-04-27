@@ -1,5 +1,6 @@
 <template>
   <div ref="mapContainer" class="map-container"></div>
+
   <PopupOverlay v-if="visible" />
 </template>
 
@@ -33,21 +34,20 @@ const { visible } = storeToRefs(popupStore);
 const props = withDefaults(defineProps<{ lat?: number; lng?: number; zoom?: number }>(), {
   lat: 12.9716, // default to home
   lng: 77.5946,
-  zoom: 12,
+  zoom: 11.5,
 });
 
 const mapContainer = ref<HTMLDivElement | null>(null);
 let map: mapboxgl.Map | null = null;
 
-const createPastComments = async () => {
+// loadComments
+const loadPastComments = async () => {
   try {
     const pastComments = await dbService.getCommentsByBrowserId(getBrowserId());
     console.log('Past comments:', pastComments);
 
     pastComments.forEach((comment: CommentData) => {
-      if (comment.browserId == getBrowserId()) {
-        markerStore.addMarker(map!, comment, false, false);
-      }
+      markerStore.addMarker(map!, comment, false, false);
     });
   } catch (error) {
     console.error('Error fetching past comments:', error);
@@ -94,7 +94,7 @@ onMounted(() => {
 
   spinAnimation(map);
 
-  createPastComments();
+  loadPastComments();
   createVoicedComments();
 
   map.on('click', (e: MapMouseEvent) => {

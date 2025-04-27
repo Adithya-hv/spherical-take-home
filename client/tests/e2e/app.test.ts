@@ -15,7 +15,7 @@ test('marker interaction flow', async ({ page }) => {
   await page.waitForTimeout(3000); // wait for animation to finish
 
   // minimize comment box
-  await page.getByRole('region', { name: 'Map' }).click({ position: { x: 501, y: 453 } });
+  await page.getByRole('region', { name: 'Map' }).click({ position: { x: 501, y: 453 } }); //make comment
   const commentBox = page.getByText('Comment:');
   if (await commentBox.isVisible()) {
     await commentBox.click();

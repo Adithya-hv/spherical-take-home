@@ -1,11 +1,11 @@
 <template>
   <div class="info-popup">
-    <h3 class="comment-title">Comment:</h3>
+    <p class="comment-title">Comment:</p>
     <div class="comment-box">
       <p>{{ comment.description }}</p>
     </div>
     <div class="delete-icon" @click="deleteComment">
-      <img :src="trashIcon" alt="Delete" />
+      <PhTrash :size="24" color="#35332f" weight="fill" />
     </div>
   </div>
 </template>
@@ -18,6 +18,7 @@ import { useMarkerStore } from '../stores/markerStore';
 import type { CommentData } from '../stores/popupStore';
 
 import trashIcon from '../assets/icons/trashIcon.svg';
+import { PhTrash } from 'phosphor-vue';
 
 const comment = defineProps<CommentData>();
 
@@ -49,10 +50,13 @@ const deleteComment = () => {
   max-height: 300px;
   overflow-y: auto;
 
-  font-family: Arial, sans-serif;
+  font-family:
+    'Comfortaa' Arial,
+    sans-serif;
   font-size: 14px;
-  line-height: 1.6;
+  line-height: 1.5;
   color: #333;
+  font-weight: 550;
 }
 .comment-box::-webkit-scrollbar {
   width: 6px;
@@ -65,14 +69,15 @@ const deleteComment = () => {
 
 .comment-title {
   margin: 0 0 8px 0;
+  font-family: 'Comfortaa', Arial, sans-serif;
   font-size: 16px;
-  font-weight: bold;
+  font-weight: 700;
   color: #222;
   padding-right: 20px;
 }
 
 .comment-box p {
-  background: #f7f7f7;
+  background: #fbf8e9;
   padding: 10px;
   border-radius: 4px;
   margin: 0;
@@ -95,6 +100,6 @@ const deleteComment = () => {
 }
 
 .delete-icon:hover {
-  background-color: #d2cdcd;
+  background-color: #cfd2cd;
 }
 </style>
