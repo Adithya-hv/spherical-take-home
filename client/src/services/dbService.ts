@@ -6,16 +6,13 @@ const BASE_URL = import.meta.env.VITE_BASE_URL;
 const api = axios.create({
   baseURL: BASE_URL,
   headers: {
-    'Content-Type': 'application/json',
-  },
+    'Content-Type': 'application/json'
+  }
 });
 
 const getCommentsByBrowserId = async (browserId: string) => {
   try {
-    // REST API:
-    // https://www.youtube.com/watch?v=P0a7PwRNLVU
     // GET /comments?browserId=browserId
-    // add type commentData[]
     const response = await api.get<CommentData[]>(`/comments/by-browserId/${browserId}`);
     return response.data;
   } catch (error: any) {
@@ -41,7 +38,7 @@ const addComment = async (commentData: CommentData) => {
 
 const deleteComment = async (commentId: string) => {
   try {
-    // /comments/:comment_id
+    // DELETE /comments/:comment_id
     const response = await api.delete(`/comments/${commentId}`);
     return response.data; // Return the response message
   } catch (error) {
@@ -53,5 +50,5 @@ const deleteComment = async (commentId: string) => {
 export default {
   getCommentsByBrowserId,
   addComment,
-  deleteComment,
+  deleteComment
 };
