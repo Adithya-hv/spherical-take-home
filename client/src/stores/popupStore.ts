@@ -8,7 +8,7 @@ export type CommentData = {
   commentId: string;
   browserId: string;
   description: string;
-  // TODO: Add support for voice comments with an object Database.
+  // TODO: Add support for voice comments with object storage.
   isVoice?: boolean;
   voice?: string;
   lng: number;
@@ -22,7 +22,7 @@ export const usePopupStore = defineStore('popup', {
     type: null as PopupType | null,
     lat: 0,
     lng: 0,
-    data: null as CommentData | null,
+    data: null as CommentData | null
   }),
 
   actions: {
@@ -55,6 +55,6 @@ export const usePopupStore = defineStore('popup', {
       this.visible = false;
       this.type = null;
       this.data = null;
-    },
-  },
+    }
+  }
 });

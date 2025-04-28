@@ -17,13 +17,13 @@ export const useMarkerStore = defineStore('markerStore', () => {
     markerDataMap.set(data.commentId, marker);
   };
 
-  const getMarker = (data: CommentData) => {
-    return markerDataMap.get(data.commentId);
+  const getMarker = (commentId: String) => {
+    return markerDataMap.get(commentId);
   };
 
   const deleteMarker = (data: CommentData) => {
     console.log('received', data.commentId);
-    const marker = markerDataMap.get(data.commentId);
+    const marker = getMarker(data.commentId);
     if (!marker) {
       console.error('Marker not found for commentId:', data.commentId);
       return;
@@ -51,7 +51,7 @@ export const useMarkerStore = defineStore('markerStore', () => {
     map: mapboxgl.Map,
     comment: CommentData,
     dbPush: boolean,
-    isVoice: boolean,
+    isVoice: boolean
   ) => {
     const marker = new mapboxgl.Marker({ element: createMarkerElement(isVoice) })
       .setLngLat([comment.lng, comment.lat])
@@ -74,6 +74,6 @@ export const useMarkerStore = defineStore('markerStore', () => {
     getMarker,
     deleteMarker,
     addMarker,
-    markerDataMap,
+    markerDataMap
   };
 });
