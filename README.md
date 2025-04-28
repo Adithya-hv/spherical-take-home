@@ -15,8 +15,8 @@ Built with a live interactive map powered by Mapbox, with markers containing per
 
 ## Demo
 
-Live Site:  
-API Server:
+Live Site: https://spherical-take-home.vercel.app/
+API Server: https://spherical-take-home.onrender.com
 
 ## Screenshots
 
